@@ -39,26 +39,31 @@ public class ProgramDriver {
 	
 	
 	public static void main(String[] args) {
-		/*ArrayList<Employee> emps = new ArrayList<Employee>();
+		/*ArrayList<Customer> emps = new ArrayList<Customer>();
 		
-		/*Map<String,String> map = new HashMap<String,String>();
-		map.put("susan1", "susan1");
-		map.put("mattyice", "mattyice");
-		map.put("sean1", "sean1");
-		map.put("marty1", "marty1");
 		try {
-			FileOutputStream fileOut = new FileOutputStream("./src/data/employeeUsers.txt"); 
+			FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
+			out.writeObject(emps);         // serialize arrayList object to bankAccounts.txt
+			out.close();
+			fileOut.close();
+		}catch(IOException ex) {
+			ex.printStackTrace();
+		}
+		
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("john123", "john12");
+		map.put("ashley1", "pass123");
+		
+		try {
+			FileOutputStream fileOut = new FileOutputStream("./src/data/AdminUsers.txt"); 
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
 			out.writeObject(map);         // serialize arrayList object to bankAccounts.txt
 			out.close();
 			fileOut.close();
 		}catch(IOException ex) {
 			ex.printStackTrace();
-		}
-		*/
-		
-		Employee.employeeLogin();
-		
+		}*/
 		
 		
 		
@@ -69,21 +74,21 @@ public class ProgramDriver {
 		
 		//AcctApplication.seeNextApplication();
 		
-		/*
+		
 		int choice = welcome();
-		//int choice2 = 0;
+		
 		
 		switch(choice) {
 		case 1:
 			Customer.customerWelcome();
-		//case 2:
+		case 2:
 			Employee.employeeLogin();
 		//case 3:
-			//return 3;
+			//Admin.adminLogin();
 		default:
 			break;
 		}
-		*/
+		
 		
 		System.out.println("Done");
 		

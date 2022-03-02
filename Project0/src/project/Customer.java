@@ -12,6 +12,15 @@ public class Customer implements java.io.Serializable, BankingInterface {
 		String phone;
 		BankAccount bankAcct;
 		
+		public Customer() {
+			this.username = "";
+			this.lastName = "";
+			this.firstName = "";
+			this.address = "";
+			this.phone = "";
+			bankAcct = new BankAccount();
+		}
+		
 		public Customer(String username, String lastName, String firstName, String phone, String address, BankAccount acct) {
 			this.username = username;
 			this.firstName= firstName;
@@ -113,32 +122,74 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			}catch(IOException ex) {
 				ex.printStackTrace();
 			}
-			
 			System.out.println("Thank you! You will hear back shortly if we approve/deny your application.");
+			customerLogin();		//return to welcome page after submitting
 		}
 		
 		
 		
-		private static void customerLogin() {
-			System.out.println("\n    Customer Login\n");
+		public static void customerLogin() {
 			String userName, password;
+			boolean userFound= false, passFound = false;
 			Scanner scan = new Scanner(System.in);
+			Map<String,String> map = new HashMap<String,String>();
+			
+			System.out.println("\n      Customer Login\n");
 			System.out.println("Username: ");
 			userName = scan.nextLine();
-			
 			System.out.println("Password:");
 			password = scan.nextLine();
 			
+			try {
+				FileInputStream fileIn = new FileInputStream("./src/data/users.txt"); //read username/pass file
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				map = (Map<String,String>)in.readObject();       //cast the contents into desired Object
+				in.close();
+				fileIn.close();
+			}catch(IOException ex) {
+				ex.printStackTrace();
+			}catch(ClassNotFoundException e1) {
+				e1.printStackTrace();
+				}
 			
+			if(map.containsKey(userName))
+				userFound = true;
+			if(map.containsValue(password))
+				passFound = true;
 			
-			/*
-			 * 
-			 *   need to check credentials to allow login
-			 *   customerHome(userName);
-			 */
+			if(passFound&&userFound) {
+				customerHome(userName);
+			} else {
+				System.out.println("\n   Invalid username/password\n");
+				customerLogin();
+			}
 		}
 		
+		
 		private static void customerHome(String userName) {
+			ArrayList<Customer> customers = new ArrayList<Customer>();
+			Customer thisCustomer = new Customer();
+			try {
+				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				customers = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+				in.close();
+				fileIn.close();
+				}catch(IOException ex) {
+					ex.printStackTrace();
+				}catch(ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			
+			for(Customer a: customers) {
+				if(a.username != null && a.username.equals(userName))
+					thisCustomer = a;
+			}
+			
+			System.out.println("\n\t" + thisCustomer.firstName + " " + thisCustomer.lastName);
+			System.out.println("\t" + thisCustomer.bankAcct.acctNumber + "\t" + thisCustomer.bankAcct.type);
+			System.out.println("\tBalance: $" + thisCustomer.bankAcct.balance);
+			
 			Scanner scan = new Scanner(System.in);
 			String option = "";
 			
@@ -151,11 +202,13 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			
 			switch(option) {
 			case "1":
-				//deposit();
+				thisCustomer.deposit(userName);
 			case "2":
-				//withdraw();
+				thisCustomer.withdraw(userName);
 			case "3":
-				//transfer();
+				System.out.println("Enter the username you would like to transfer to: ");
+				option = scan.nextLine();
+				thisCustomer.transfer(userName, option);
 			case "4":
 				System.out.println("Logging out...");
 				System.exit(0);
@@ -170,23 +223,154 @@ public class Customer implements java.io.Serializable, BankingInterface {
 
 
 		@Override
-		public void deposit() {
-			// TODO Auto-generated method stub
+		public void deposit(String username) {
+			ArrayList<Customer> customers = new ArrayList<Customer>();
+			Customer thisCustomer = new Customer();
+			Scanner scan = new Scanner(System.in);
+			String option = "";
+			
+			try {
+				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				customers = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+				in.close();
+				fileIn.close();
+				}catch(IOException ex) {
+					ex.printStackTrace();
+				}catch(ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			
+			System.out.println("   Enter deposit amount: ");
+			option = scan.nextLine();
+			int dep = Integer.parseInt(option);
+			
+			for(Customer a: customers) {
+				if(a.username != null && a.username.equals(username))
+					a.bankAcct.balance += dep;    //add amount to balance
+			}
+					
+			try {
+				FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
+				ObjectOutputStream out = new ObjectOutputStream(fileOut);  
+				out.writeObject(customers);         // serialize queue object to applications.txt
+				out.close();
+				fileOut.close();
+			}catch(IOException ex) {
+				ex.printStackTrace();
+			}
+			
+			System.out.println("$" + dep + " deposited...\n");
+			customerHome(username);
 			
 		}
 
 
 		@Override
-		public void withdraw() {
-			// TODO Auto-generated method stub
+		public void withdraw(String username) {
+			ArrayList<Customer> customers = new ArrayList<Customer>();
+			Customer thisCustomer = new Customer();
+			Scanner scan = new Scanner(System.in);
+			String option = "";
+			
+			try {
+				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				customers = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+				in.close();
+				fileIn.close();
+				}catch(IOException ex) {
+					ex.printStackTrace();
+				}catch(ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			
+			System.out.println("   Enter amount to withdraw: ");
+			option = scan.nextLine();
+			int with = Integer.parseInt(option);
+			
+			for(Customer a: customers) {
+				if(a.username != null && a.username.equals(username)) {
+					if(a.bankAcct.balance>=with)
+						a.bankAcct.balance -= with;    //withdraw amount from balance
+					else {
+						System.out.println("Cannot withdraw $" + with + ". Current balance: " + a.bankAcct.balance);
+						customerHome(username);
+					}
+				}	
+			}
+					
+			try {
+				FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
+				ObjectOutputStream out = new ObjectOutputStream(fileOut);  
+				out.writeObject(customers);         // serialize queue object to applications.txt
+				out.close();
+				fileOut.close();
+			}catch(IOException ex) {
+				ex.printStackTrace();
+			}
+			
+			System.out.println("\n$" + with + " withdrawn...\n");
+			customerHome(username);
 			
 		}
 
 
 		@Override
-		public void transfer() {
-			// TODO Auto-generated method stub
+		public void transfer(String fromUser, String toUser) {
+			ArrayList<Customer> customers = new ArrayList<Customer>();
+			Customer thisCustomer = new Customer();
+			Customer toCustomer = new Customer();
+			Scanner scan = new Scanner(System.in);
+			String option = "";
+			
+			try {
+				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+				ObjectInputStream in = new ObjectInputStream(fileIn);
+				customers = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+				in.close();
+				fileIn.close();
+				}catch(IOException ex) {
+					ex.printStackTrace();
+				}catch(ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			
+			System.out.println("   Enter amount to transfer: ");
+			option = scan.nextLine();
+			int amt = Integer.parseInt(option);
+			
+			for(Customer a: customers) {
+				if(a.username != null && a.username.equals(fromUser))
+					if(amt<a.bankAcct.balance) 
+						a.bankAcct.balance -= amt;							//take out amount
+					else {
+						System.out.println("Cannot withdraw $" + amt + ". Current balance: " + a.bankAcct.balance);
+						customerHome(username);
+					}
+			}
+			for(Customer a: customers) {
+				if(a.username != null && a.username.equals(toUser)) 
+					a.bankAcct.balance += amt;					//add amount to repipient's balance
+			}
+					
+			try {
+				FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
+				ObjectOutputStream out = new ObjectOutputStream(fileOut);  
+				out.writeObject(customers);         // serialize queue object to applications.txt
+				out.close();
+				fileOut.close();
+			}catch(IOException ex) {
+				ex.printStackTrace();
+			}
+			
+			System.out.println("\n$" + amt + " transferred to " + toUser + "...\n");
+			customerHome(username);
+			
 			
 		}
+		
+		
+
 	
 }
