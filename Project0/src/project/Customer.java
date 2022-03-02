@@ -122,8 +122,8 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			}catch(IOException ex) {
 				ex.printStackTrace();
 			}
-			System.out.println("Thank you! You will hear back shortly if we approve/deny your application.");
-			customerLogin();		//return to welcome page after submitting
+			System.out.println("\nThank you! You will hear back shortly if we approve/deny your application.");
+			System.exit(0);		//quit application after submitting
 		}
 		
 		

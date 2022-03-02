@@ -39,26 +39,25 @@ public class ProgramDriver {
 	
 	
 	public static void main(String[] args) {
-		/*ArrayList<Customer> emps = new ArrayList<Customer>();
+		//ArrayList<Admin> emps = new ArrayList<Admin>();
 		
-		try {
-			FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
+		/*try {
+			FileOutputStream fileOut = new FileOutputStream("./src/data/admins.txt"); 
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
 			out.writeObject(emps);         // serialize arrayList object to bankAccounts.txt
 			out.close();
 			fileOut.close();
 		}catch(IOException ex) {
 			ex.printStackTrace();
-		}
+		}*/
 		
-		Map<String,String> map = new HashMap<String,String>();
-		map.put("john123", "john12");
-		map.put("ashley1", "pass123");
+		/*emps.add(new Admin(134,"John","Smith", "john123"));
+		emps.add(new Admin(136,"Ashley","Wilson", "ashley1"));
 		
 		try {
-			FileOutputStream fileOut = new FileOutputStream("./src/data/AdminUsers.txt"); 
+			FileOutputStream fileOut = new FileOutputStream("./src/data/admins.txt"); 
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
-			out.writeObject(map);         // serialize arrayList object to bankAccounts.txt
+			out.writeObject(emps);         // serialize arrayList object to bankAccounts.txt
 			out.close();
 			fileOut.close();
 		}catch(IOException ex) {
@@ -83,8 +82,8 @@ public class ProgramDriver {
 			Customer.customerWelcome();
 		case 2:
 			Employee.employeeLogin();
-		//case 3:
-			//Admin.adminLogin();
+		case 3:
+			Admin.adminLogin();
 		default:
 			break;
 		}
