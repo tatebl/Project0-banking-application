@@ -1,15 +1,12 @@
 package project;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Scanner;
+import static java.math.BigDecimal.ROUND_HALF_UP;
+
+import java.io.*;
+import java.util.*;
+
+import java.math.BigDecimal;
+
 
 public class Admin extends Employee implements BankingInterface {
 	
@@ -25,6 +22,12 @@ public class Admin extends Employee implements BankingInterface {
 		this.firstName = "";
 		this.lastName = "";
 		this.username = "";
+	}
+	
+	public static float round(float d, int decimalPlace) {
+	    BigDecimal bd = new BigDecimal(Float.toString(d));
+	    bd = bd.setScale(decimalPlace, ROUND_HALF_UP);
+	    return bd.floatValue();
 	}
 
 	//Admin method to withdraw from an account
@@ -53,7 +56,7 @@ public class Admin extends Employee implements BankingInterface {
 		
 		System.out.println("   Enter withdraw amount: ");
 		option = scan.nextLine();
-		int with = Integer.parseInt(option);
+		float with = Float.parseFloat(option);
 		if(with<=0) {			//ensure value is positive
 			System.out.println("\nInput invalid - negative amount");	
 			adminHome(adminUser);
@@ -61,10 +64,12 @@ public class Admin extends Employee implements BankingInterface {
 		
 		for(Customer a: customers) {
 			if(a.username != null && a.username.equals(username)) {
-				if(a.bankAcct.balance>=with)
+				if(a.bankAcct.balance>=with) {
+					thisCustomer = a;
 					a.bankAcct.balance -= with;    //withdraw amount from balance if amount is less
+				}
 				else {
-					System.out.println("Cannot withdraw $" + with + ". Current balance: " + a.bankAcct.balance);
+					System.out.println("Cannot withdraw $" + with + ". Current balance: " + round(a.bankAcct.balance,2));
 					adminHome(adminUser);
 				}
 			}	
@@ -81,8 +86,8 @@ public class Admin extends Employee implements BankingInterface {
 		}
 		
 		System.out.println("$" + with + " withdrawn from account " + thisCustomer.bankAcct.acctNumber + "\n");
-		System.out.println("    Old balance: $" + oldBalance);
-		System.out.println("    New balance: $" + thisCustomer.bankAcct.balance);
+		System.out.println("    Old balance: $" + round(oldBalance,2));
+		System.out.println("    New balance: $" + round(thisCustomer.bankAcct.balance,2));
 
 		adminHome(adminUser);
 	}
@@ -110,7 +115,7 @@ public class Admin extends Employee implements BankingInterface {
 		
 		System.out.println("   Enter amount to transfer: ");
 		option = scan.nextLine();
-		int amt = Integer.parseInt(option);
+		float amt = Float.parseFloat(option);
 		
 		for(Customer a: customers) {
 			if(a.username != null && a.username.equals(fromUsername))
@@ -119,7 +124,7 @@ public class Admin extends Employee implements BankingInterface {
 					a.bankAcct.balance -= amt;		  //take out amount
 				}
 				else {
-					System.out.println("Cannot withdraw $" + amt + ". Current balance: " + a.bankAcct.balance);
+					System.out.println("Cannot withdraw $" + amt + ". Current balance: " + round(a.bankAcct.balance,2));
 				}
 		}
 		for(Customer a: customers) {
@@ -139,8 +144,8 @@ public class Admin extends Employee implements BankingInterface {
 			ex.printStackTrace();
 		}
 		System.out.println("\n$" + amt + " transferred from account " + fromCustomer.bankAcct.acctNumber + " to " + toCustomer.bankAcct.acctNumber + "...\n");
-		System.out.println("Account " + fromCustomer.bankAcct.acctNumber + " balance: $" + fromCustomer.bankAcct.balance);
-		System.out.println("Account " + toCustomer.bankAcct.acctNumber + " balance: $" + toCustomer.bankAcct.balance + "\n");
+		System.out.println("Account " + fromCustomer.bankAcct.acctNumber + " balance: $" + round(fromCustomer.bankAcct.balance,2));
+		System.out.println("Account " + toCustomer.bankAcct.acctNumber + " balance: $" + round(toCustomer.bankAcct.balance,2) + "\n");
 
 	}
 
@@ -170,11 +175,12 @@ public class Admin extends Employee implements BankingInterface {
 		
 		System.out.println("   Enter deposit amount: ");
 		option = scan.nextLine();
-		int dep = Integer.parseInt(option);
+		float dep = Float.parseFloat(option);
 		
 		for(Customer a: customers) {
 			if(a.username != null && a.username.equals(username)) {
 				oldBalance = a.bankAcct.balance;
+				thisCustomer = a;
 				a.bankAcct.balance += dep;    //add amount to balance
 			}	
 		}
@@ -190,8 +196,8 @@ public class Admin extends Employee implements BankingInterface {
 		}
 		
 		System.out.println("$" + dep + " deposited to account " + thisCustomer.bankAcct.acctNumber + "\n");
-		System.out.println("    Old balance: $" + oldBalance);
-		System.out.println("    New balance: $" + thisCustomer.bankAcct.balance);
+		System.out.println("    Old balance: $" + round(oldBalance,2));
+		System.out.println("    New balance: $" + round(thisCustomer.bankAcct.balance,2));
 		adminHome(adminUser);
 		
 	}
@@ -241,6 +247,8 @@ public class Admin extends Employee implements BankingInterface {
 	//removes customer object from the ArrayList (deleting their bank account)
 	private static void removeCustomer(String username) {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
+		Customer user = new Customer();
+		
 		try {
 			FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -253,10 +261,12 @@ public class Admin extends Employee implements BankingInterface {
 				e1.printStackTrace();
 			}
 	
+
 		for(Customer a: customers) {
 			if(a.username != null && a.username.equals(username))
-				customers.remove(a);    //remove customer from arraylist
+				user = a;    //have to remove outside of loop to avoid exception
 		}
+		customers.remove(user);//remove customer from arraylist
 		
 		try {
 			FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
@@ -303,11 +313,13 @@ public class Admin extends Employee implements BankingInterface {
 		String option = "";
 		System.out.println("Are you sure you want to delete this account? (Y/N)"); //no going back after this
 		option = s.nextLine();
+		option = option.toUpperCase();
 		
 		switch(option) {
 		case "Y":
 			removeCustomer(username);
 			removeUser(username);
+			System.out.println("user " + username + " deleted...");
 			adminHome(username);
 		case "N":
 			adminHome(adminUser);
@@ -324,7 +336,7 @@ public class Admin extends Employee implements BankingInterface {
 		Scanner scan = new Scanner(System.in);
 		Map<String,String> map = new HashMap<String,String>();
 		
-		System.out.println("\n       Admin Login\n");
+		System.out.println("\n            Admin Login\n");
 		System.out.println("Username: ");
 		userName = scan.nextLine();
 		System.out.println("Password:");

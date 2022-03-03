@@ -2,13 +2,40 @@ package project;
 
 import java.io.*;
 import java.util.*;
-import exceptions.*;
+
 
 public class ProgramDriver {
 	
 	public static void main(String[] args) {
+		/*ArrayList<Admin> a = new ArrayList<Admin>();	
+		a.add(new Admin(1122, "John", "Lunsford", "john123"));
+		a.add(new Admin(1423, "Ashley", "Watson", "ashley12"));
 		
-		int choice = welcome();
+		try {
+			FileOutputStream fileOut = new FileOutputStream("./src/data/admins.txt"); 
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
+			out.writeObject(a);         
+			out.close();
+			fileOut.close();
+		}catch(IOException ex) {
+			ex.printStackTrace();
+		}
+		
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("ashley12", "pass123");
+		map.put("john123", "john12");
+		
+		try {
+			FileOutputStream fileOut = new FileOutputStream("./src/data/adminUsers.txt"); 
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
+			out.writeObject(map);         
+			out.close();
+			fileOut.close();
+		}catch(IOException ex) {
+			ex.printStackTrace();
+		}*/
+		
+		int choice = welcome();			//show welcome page and return which type of login
 			
 		switch(choice) {
 		case 1:
@@ -22,7 +49,8 @@ public class ProgramDriver {
 		}
 	}
 
-	private static int welcome()  {			//throws InvalidChoiceException
+	//Welcome screen to allow users to choose login page
+	private static int welcome()  {			
 		Scanner s = new Scanner(System.in);
 		int a = 0;
 		

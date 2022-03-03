@@ -1,6 +1,9 @@
 package project;
 
+import static java.math.BigDecimal.ROUND_HALF_UP;
+
 import java.io.*;
+import java.math.BigDecimal;
 import java.util.*;
 
 public class Customer implements java.io.Serializable, BankingInterface {
@@ -39,14 +42,20 @@ public class Customer implements java.io.Serializable, BankingInterface {
 		  		+ "Phone:       " + phone + "\n"
 		  		+ "Account No:  " + bankAcct.acctNumber + "\n"
 		  		+ "Joint:       " + bankAcct.isJoint + "\n"
-		  		+ "Balance:     " + bankAcct.balance + "\n";
+		  		+ "Balance:     " + round(bankAcct.balance,2) + "\n";
+		}
+		
+		public static float round(float d, int decimalPlace) {
+		    BigDecimal bd = new BigDecimal(Float.toString(d));
+		    bd = bd.setScale(decimalPlace, ROUND_HALF_UP);
+		    return bd.floatValue();
 		}
 		
 		//customer starting screen
 		public static void customerWelcome() {
 			Scanner s = new Scanner(System.in);
 			
-			System.out.println("\n      Customer Login\n     Would you like to:\n");
+			System.out.println("\n\n           Customer Login\n         Would you like to:\n");
 			System.out.println("    (1) Apply for a new bank account");
 			System.out.println("    (2) Login");
 			
@@ -78,12 +87,12 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			System.out.println("Do you want to open a Checking (1) or Savings (2)?");
 			type = scan.nextLine();
 			if(type.equals("1")) {
-				myApp.acctType = "checking";
+				myApp.acctType = "Checking";
 			} else
-				myApp.acctType = "savings";
+				myApp.acctType = "Savings";
 			System.out.println("Is this a joint account? (Y/N):");
 			type = scan.nextLine();
-			if(type.toUpperCase()=="Y") 		//this is set to false by default
+			if(type.toUpperCase().equals("Y")) 		//this is set to false by default
 				myApp.isJoint = true;
 			System.out.println("Enter mailing address:");
 			myApp.address = scan.nextLine();
@@ -128,7 +137,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			Scanner scan = new Scanner(System.in);
 			Map<String,String> map = new HashMap<String,String>();
 			
-			System.out.println("\n      Customer Login\n");
+			System.out.println("\n\n           Customer Login\n");
 			System.out.println("Username: ");
 			userName = scan.nextLine();
 			System.out.println("Password:");
@@ -183,11 +192,16 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			}
 			
 			//print account info for customer
+			System.out.println("______________________________________");
 			System.out.println("\n\t" + thisCustomer.firstName + " " + thisCustomer.lastName);
 			System.out.println("\t" + thisCustomer.bankAcct.acctNumber + "\t" + thisCustomer.bankAcct.type);
-			System.out.println("\tBalance: $" + thisCustomer.bankAcct.balance);
+			if(thisCustomer.bankAcct.isJoint)
+				System.out.println("\tJoint");
+			System.out.println("\tBalance: $" + round(thisCustomer.bankAcct.balance,2));
+			System.out.println("______________________________________");
+			
 		
-			System.out.println("\n      Please choose from the following: \n");
+			System.out.println("\nPlease choose from the following: \n");
 			System.out.println("    (1) Make a deposit");
 			System.out.println("    (2) Make a withdrawal");
 			System.out.println("    (3) Make a transfer");
@@ -234,7 +248,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			
 			System.out.println("   Enter deposit amount: ");
 			option = scan.nextLine();					
-			int dep = Integer.parseInt(option);
+			float dep = Float.parseFloat(option);
 			
 			if(dep<=0) {
 				System.out.println("\nInput invalid - negative amount");
@@ -283,7 +297,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			
 			System.out.println("   Enter amount to withdraw: ");
 			option = scan.nextLine();
-			int with = Integer.parseInt(option);
+			float with = Float.parseFloat(option);
 			
 			if(with<=0) {
 				System.out.println("\nInput invalid - negative amount");	//validate
@@ -295,7 +309,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 					if(a.bankAcct.balance>=with)
 						a.bankAcct.balance -= with;    //withdraw amount from balance
 					else {
-						System.out.println("Cannot withdraw $" + with + ". Current balance: " + a.bankAcct.balance);
+						System.out.println("Cannot withdraw $" + with + ". Current balance: " + round(a.bankAcct.balance,2));
 						customerHome(username);
 					}
 				}	
@@ -339,7 +353,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			
 			System.out.println("   Enter amount to transfer: ");
 			option = scan.nextLine();
-			int amt = Integer.parseInt(option);
+			float amt = Float.parseFloat(option);
 			
 			if(amt<=0) {
 				System.out.println("\nInput invalid - negative amount");
@@ -351,7 +365,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 					if(amt<=a.bankAcct.balance) 
 						a.bankAcct.balance -= amt;							//take out amount
 					else {
-						System.out.println("Cannot withdraw $" + amt + ". Current balance: " + a.bankAcct.balance);
+						System.out.println("Cannot withdraw $" + amt + ". Current balance: " + round(a.bankAcct.balance,2));
 						customerHome(fromUser);
 					}
 			}
