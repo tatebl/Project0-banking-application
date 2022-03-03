@@ -372,6 +372,7 @@ public class Admin extends Employee implements BankingInterface {
 		
 		Scanner scan = new Scanner(System.in);
 		String option = "";
+		System.out.println("  ________________________________________");
 		System.out.println("\n                 Welcome!");
 		System.out.println("      Please choose from the following: \n");
 		System.out.println("    (1) View new account applications");
@@ -380,6 +381,7 @@ public class Admin extends Employee implements BankingInterface {
 		System.out.println("    (4) Deposit/Withdraw/Transfer from accounts");
 		System.out.println("    (5) Delete an account");
 		System.out.println("    (6) Logout");
+		System.out.println("  ________________________________________");
 		option = scan.nextLine();
 		
 		switch(option) {
@@ -402,7 +404,7 @@ public class Admin extends Employee implements BankingInterface {
 			System.out.println("Logging out...");
 			System.exit(0);
 		default:
-			System.out.println("\nPlease enter a number 1-2\n");
+			System.out.println("\nPlease enter a number 1-6\n");
 			adminHome(username);
 		}
 		

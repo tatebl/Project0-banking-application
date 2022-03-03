@@ -54,8 +54,8 @@ public class ProgramDriver {
 		Scanner s = new Scanner(System.in);
 		int a = 0;
 		
-		System.out.println("  	     Welcome! ");
-		System.out.println("Please select the correct login page:\n");
+		System.out.println("  	      Welcome! ");
+		System.out.println(" Please select the correct login page:\n");
 		System.out.println("    (1) Customer");
 		System.out.println("    (2) Employee");
 		System.out.println("    (3) Admin");

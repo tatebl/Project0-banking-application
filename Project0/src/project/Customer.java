@@ -125,7 +125,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			}catch(IOException ex) {
 				ex.printStackTrace();
 			}
-			System.out.println("\nThank you! You will hear back shortly if we approve/deny your application.");
+			System.out.println("\n Thank you! You will hear back shortly if we approve/deny your application.");
 			System.exit(0);		//quit application after submitting
 		}
 		
@@ -192,16 +192,16 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			}
 			
 			//print account info for customer
-			System.out.println("______________________________________");
+			System.out.println("___________________________________");
 			System.out.println("\n\t" + thisCustomer.firstName + " " + thisCustomer.lastName);
 			System.out.println("\t" + thisCustomer.bankAcct.acctNumber + "\t" + thisCustomer.bankAcct.type);
 			if(thisCustomer.bankAcct.isJoint)
 				System.out.println("\tJoint");
 			System.out.println("\tBalance: $" + round(thisCustomer.bankAcct.balance,2));
-			System.out.println("______________________________________");
+			System.out.println("___________________________________");
 			
 		
-			System.out.println("\nPlease choose from the following: \n");
+			System.out.println("\n Please choose from the following: \n");
 			System.out.println("    (1) Make a deposit");
 			System.out.println("    (2) Make a withdrawal");
 			System.out.println("    (3) Make a transfer");

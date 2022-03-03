@@ -197,7 +197,7 @@ public class Employee implements java.io.Serializable {
 		Scanner scan = new Scanner(System.in);
 		Map<String,String> map = new HashMap<String,String>();
 		
-		System.out.println("\n      Employee Login\n");
+		System.out.println("\n            Employee Login\n");
 		System.out.println("Username: ");
 		userName = scan.nextLine();
 		System.out.println("Password:");
@@ -232,12 +232,14 @@ public class Employee implements java.io.Serializable {
 	public static void employeeHome() {
 		Scanner scan = new Scanner(System.in);
 		String option = "";
+		System.out.println("  ________________________________________");
 		System.out.println("\n                 Welcome!");
 		System.out.println("      Please choose from the following: \n");
 		System.out.println("    (1) View new account applications");
 		System.out.println("    (2) Approve/Deny account applications");
 		System.out.println("    (3) View all accounts");
 		System.out.println("    (4) Logout");
+		System.out.println("  ________________________________________");
 		option = scan.nextLine();
 		
 		switch(option) {
