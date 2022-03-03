@@ -27,6 +27,7 @@ public class Admin extends Employee implements BankingInterface {
 		this.username = "";
 	}
 
+	//Admin method to withdraw from an account
 	@Override
 	public void withdraw(String adminUser) {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
@@ -36,9 +37,9 @@ public class Admin extends Employee implements BankingInterface {
 		float oldBalance = 0;
 		
 		try {
-			FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+			FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			customers = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+			customers = (ArrayList<Customer>)in.readObject();       
 			in.close();
 			fileIn.close();
 			}catch(IOException ex) {
@@ -53,11 +54,15 @@ public class Admin extends Employee implements BankingInterface {
 		System.out.println("   Enter withdraw amount: ");
 		option = scan.nextLine();
 		int with = Integer.parseInt(option);
+		if(with<=0) {			//ensure value is positive
+			System.out.println("\nInput invalid - negative amount");	
+			adminHome(adminUser);
+		}
 		
 		for(Customer a: customers) {
 			if(a.username != null && a.username.equals(username)) {
 				if(a.bankAcct.balance>=with)
-					a.bankAcct.balance -= with;    //withdraw amount from balance
+					a.bankAcct.balance -= with;    //withdraw amount from balance if amount is less
 				else {
 					System.out.println("Cannot withdraw $" + with + ". Current balance: " + a.bankAcct.balance);
 					adminHome(adminUser);
@@ -82,14 +87,13 @@ public class Admin extends Employee implements BankingInterface {
 		adminHome(adminUser);
 	}
 	
-
+	//admin method to transfer between accounts
 	@Override
 	public void transfer(String fromUsername, String toUserName) {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 		Customer fromCustomer = new Customer();
 		Customer toCustomer = new Customer();
 		Scanner scan = new Scanner(System.in);
-		float oldBalance =0;
 		String option = "";
 		
 		try {
@@ -118,11 +122,9 @@ public class Admin extends Employee implements BankingInterface {
 					System.out.println("Cannot withdraw $" + amt + ". Current balance: " + a.bankAcct.balance);
 				}
 		}
-		
 		for(Customer a: customers) {
 			if(a.username != null && a.username.equals(toUserName)) {
 				toCustomer = a;
-				oldBalance = a.bankAcct.balance;
 				a.bankAcct.balance += amt;					//add amount to repipient's balance
 			}
 		}
@@ -136,13 +138,13 @@ public class Admin extends Employee implements BankingInterface {
 		}catch(IOException ex) {
 			ex.printStackTrace();
 		}
-		
 		System.out.println("\n$" + amt + " transferred from account " + fromCustomer.bankAcct.acctNumber + " to " + toCustomer.bankAcct.acctNumber + "...\n");
 		System.out.println("Account " + fromCustomer.bankAcct.acctNumber + " balance: $" + fromCustomer.bankAcct.balance);
 		System.out.println("Account " + toCustomer.bankAcct.acctNumber + " balance: $" + toCustomer.bankAcct.balance + "\n");
 
 	}
 
+	//admin method to deposit to an account
 	@Override
 	public void deposit(String adminUser) {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
@@ -194,6 +196,7 @@ public class Admin extends Employee implements BankingInterface {
 		
 	}
 	
+	//allows admin to approve or deny new account applications
 	public static void reviewApplications(String username) {
 		Scanner scan = new Scanner(System.in);
 		AcctApplication.seeNextApplication();		// print first application in the queue
@@ -215,16 +218,14 @@ public class Admin extends Employee implements BankingInterface {
 		case "D":
 			deny();
 			System.out.println("Enter 'Y' to continue or 'Q' to return to home screen");
-			option = scan.nextLine().toUpperCase();
+			option = scan.nextLine();
+			option = option.toUpperCase();
 			if(option.equals("Y"))
 				reviewApplications(username);
 			else
 				adminHome(username);
 		default:
-			//if not a valid number
-			//have welcome() recursively call itself if it makes it past
-			//throw new InvalidChoiceException("Option invalid");
-			System.out.println("Input not valid.\n");
+			System.out.println("Input not valid. Enter 'A' or 'D'\n");
 			reviewApplications(username);
 		}
 		
@@ -237,12 +238,13 @@ public class Admin extends Employee implements BankingInterface {
 	
 	}
 	
+	//removes customer object from the ArrayList (deleting their bank account)
 	private static void removeCustomer(String username) {
 		ArrayList<Customer> customers = new ArrayList<Customer>();
 		try {
-			FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+			FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			customers = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+			customers = (ArrayList<Customer>)in.readObject();       
 			in.close();
 			fileIn.close();
 			}catch(IOException ex) {
@@ -259,7 +261,7 @@ public class Admin extends Employee implements BankingInterface {
 		try {
 			FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
-			out.writeObject(customers);         // serialize queue object to applications.txt
+			out.writeObject(customers);         
 			out.close();
 			fileOut.close();
 		}catch(IOException ex) {
@@ -267,12 +269,13 @@ public class Admin extends Employee implements BankingInterface {
 		}	
 	}
 	
+	//removes the username and password of a specified user to prevent login
 	private static void removeUser(String username) {
 		Map<String,String> map = new HashMap<String,String>();
 		try {
-			FileInputStream fileIn = new FileInputStream("./src/data/users.txt"); //read contents
+			FileInputStream fileIn = new FileInputStream("./src/data/users.txt"); 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			map = (Map<String,String>)in.readObject();       //cast the contents into desired Object
+			map = (Map<String,String>)in.readObject();       
 			in.close();
 			fileIn.close();
 			}catch(IOException ex) {
@@ -286,7 +289,7 @@ public class Admin extends Employee implements BankingInterface {
 		try {
 			FileOutputStream fileOut = new FileOutputStream("./src/data/users.txt"); 
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
-			out.writeObject(map);         // serialize queue object to applications.txt
+			out.writeObject(map);         
 			out.close();
 			fileOut.close();
 		}catch(IOException ex) {
@@ -294,10 +297,11 @@ public class Admin extends Employee implements BankingInterface {
 		}	
 	}
 	
+	//removes customer and user profile from the system
 	private static void deleteAccount(String adminUser, String username) {
 		Scanner s = new Scanner(System.in);
 		String option = "";
-		System.out.println("Are you sure you want to delete this account? (Y/N)");
+		System.out.println("Are you sure you want to delete this account? (Y/N)"); //no going back after this
 		option = s.nextLine();
 		
 		switch(option) {
@@ -313,6 +317,7 @@ public class Admin extends Employee implements BankingInterface {
 		}
 	}
 	
+	//admin login page
 	public static void adminLogin() {
 		String userName, password;
 		boolean userFound= false, passFound = false;
@@ -326,9 +331,9 @@ public class Admin extends Employee implements BankingInterface {
 		password = scan.nextLine();
 		
 		try {
-			FileInputStream fileIn = new FileInputStream("./src/data/adminUsers.txt"); //read contents
+			FileInputStream fileIn = new FileInputStream("./src/data/adminUsers.txt"); 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			map = (Map<String,String>)in.readObject();       //cast the contents into desired Object
+			map = (Map<String,String>)in.readObject();      
 			in.close();
 			fileIn.close();
 		}catch(IOException ex) {
@@ -342,7 +347,7 @@ public class Admin extends Employee implements BankingInterface {
 		if(map.containsValue(password))
 			passFound = true;
 		
-		if(passFound&&userFound) {
+		if(passFound&&userFound) {				//if username and password are found, allow login
 			adminHome(userName);
 		} else {
 			System.out.println("\n   Invalid username/password\n");
@@ -385,9 +390,6 @@ public class Admin extends Employee implements BankingInterface {
 			System.out.println("Logging out...");
 			System.exit(0);
 		default:
-			//if not a valid number
-			//have welcome() recursively call itself if it makes it past
-			//throw new InvalidChoiceException("Option invalid");
 			System.out.println("\nPlease enter a number 1-2\n");
 			adminHome(username);
 		}
@@ -396,7 +398,10 @@ public class Admin extends Employee implements BankingInterface {
 	
 	public static void adminTransactions(String userName) {
 		ArrayList<Admin> admins = new ArrayList<Admin>();
+		String option;
+		Scanner scan = new Scanner(System.in);
 		Admin thisAdmin = new Admin();
+		
 		try {
 			FileInputStream fileIn = new FileInputStream("./src/data/admins.txt"); //read contents
 			ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -414,16 +419,11 @@ public class Admin extends Employee implements BankingInterface {
 				thisAdmin = a;
 		}
 		
-		
-		String option;
-		Scanner scan = new Scanner(System.in);
-		
 		System.out.println("      Please choose from the following: \n");
 		System.out.println("    (1) Withdraw from an account");
 		System.out.println("    (2) Deposit to account");
 		System.out.println("    (3) Transfer between accounts");
 		option = scan.nextLine();
-		
 		
 		switch(option) {
 		case "1":
@@ -439,6 +439,5 @@ public class Admin extends Employee implements BankingInterface {
 		default:
 		}
 	}
-	
-	
+
 }

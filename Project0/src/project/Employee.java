@@ -14,6 +14,7 @@ public class Employee implements java.io.Serializable {
 	String lastName;
 	String username;
 	
+	//constructor
 	public Employee() {
 		this.empid = 0;
 		this.firstName = "";
@@ -21,6 +22,7 @@ public class Employee implements java.io.Serializable {
 		this.username = "";
 	}
 	
+	//constructor
 	public Employee(int empid, String firstName, String lastName, String username) {
 		this.empid = empid;
 		this.firstName = firstName;
@@ -28,12 +30,7 @@ public class Employee implements java.io.Serializable {
 		this.username = username;
 	}
 	
-	
-	public void getAccountInfo(int acctNum) {
-		
-		
-	}
-	
+	//prints list of all customers and their account info
 	public static void viewAllAccounts() {
 		ArrayList<Customer> accounts = new ArrayList<Customer>();
 		try {
@@ -47,12 +44,11 @@ public class Employee implements java.io.Serializable {
 			}catch(ClassNotFoundException e1) {
 				e1.printStackTrace();
 			}
-		
 		System.out.println(accounts);
 	}
 	
-	
-	
+	// if a new application is approved, create a new customer and user
+	// removes application from the queue
 	public static void approve() {
 		Queue<AcctApplication> q = new LinkedList<>();		//empty queue to store applications
 		ArrayList<Customer> accounts = new ArrayList<Customer>();
@@ -61,7 +57,7 @@ public class Employee implements java.io.Serializable {
 		try {
 			FileInputStream fileIn = new FileInputStream("./src/data/applications.txt"); //read contents
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			q = (Queue<AcctApplication>)in.readObject();       //cast the contents into desired Object
+			q = (Queue<AcctApplication>)in.readObject();      
 			in.close();
 			fileIn.close();
 			}catch(IOException ex) {
@@ -71,7 +67,7 @@ public class Employee implements java.io.Serializable {
 			}
 		
 		AcctApplication app = q.peek();
-		q.remove();		//remove the application from the queue
+		q.remove();				//remove the application from the queue
 		
 		try {
 			FileOutputStream fileOut = new FileOutputStream("./src/data/applications.txt"); 
@@ -83,16 +79,15 @@ public class Employee implements java.io.Serializable {
 			ex.printStackTrace();
 		}
 		
-		// create new BankAccount object and store it in bankAccounts.txt arrayList
-		
+		//create new Customer and Bank Account
 		int newAcctNum = (int)(Math.random()*(9999999-1111111+1)+1111111); //generate random 7 digit number
 		BankAccount newBankAccount = new BankAccount(app.acctType, newAcctNum, 0, app.isJoint);
 		Customer newCustomer = new Customer(app.username, app.lastName, app.firstName, app.phone, app.address, newBankAccount);
 
 		try {
-			FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+			FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			accounts = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+			accounts = (ArrayList<Customer>)in.readObject();       //read in list of customers
 			in.close();
 			fileIn.close();
 			}catch(IOException ex) {
@@ -100,13 +95,11 @@ public class Employee implements java.io.Serializable {
 			}catch(ClassNotFoundException e1) {
 				e1.printStackTrace();
 			}
-		
 		accounts.add(newCustomer);		//add new customer to array list and send back to file
-		
 		try {
 			FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
-			out.writeObject(accounts);         // serialize queue object to applications.txt
+			out.writeObject(accounts);        
 			out.close();
 			fileOut.close();
 		}catch(IOException ex) {
@@ -114,9 +107,9 @@ public class Employee implements java.io.Serializable {
 		}	
 		
 		try {
-			FileInputStream fileIn = new FileInputStream("./src/data/users.txt"); //read contents
+			FileInputStream fileIn = new FileInputStream("./src/data/users.txt"); 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			map = (Map<String,String>)in.readObject();       //cast the contents into desired Object
+			map = (Map<String,String>)in.readObject();       		//read in <user,password> map
 			in.close();
 			fileIn.close();
 			}catch(IOException ex) {
@@ -138,14 +131,13 @@ public class Employee implements java.io.Serializable {
 		}	
 	}
 	
-	
-	
+	//if an application is denied, simply remove from the queue 
 	public static void deny() {
-		Queue<AcctApplication> q = new LinkedList<>();		//empty queue to store applications
+		Queue<AcctApplication> q = new LinkedList<>();		
 		try {
-			FileInputStream fileIn = new FileInputStream("./src/data/applications.txt"); //read contents
+			FileInputStream fileIn = new FileInputStream("./src/data/applications.txt"); 
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			q = (Queue<AcctApplication>)in.readObject();       //cast the contents into desired Object
+			q = (Queue<AcctApplication>)in.readObject();       //read in queue of applications
 			in.close();
 			fileIn.close();
 			}catch(IOException ex) {
@@ -154,7 +146,6 @@ public class Employee implements java.io.Serializable {
 				e1.printStackTrace();
 			}
 		q.remove();		//remove the application from the queue
-		
 		try {
 			FileOutputStream fileOut = new FileOutputStream("./src/data/applications.txt"); 
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);  
@@ -166,8 +157,7 @@ public class Employee implements java.io.Serializable {
 		}
 	}
 		
-	
-	
+	//allows employees to approve/deny applications one at a time as they appear in the queue
 	public static void reviewApplications() {
 		Scanner scan = new Scanner(System.in);
 		AcctApplication.seeNextApplication();		// print first application in the queue
@@ -177,7 +167,7 @@ public class Employee implements java.io.Serializable {
 		option = scan.nextLine().toUpperCase();
 		
 		switch(option) {
-		case "A":
+		case "A":	//if application is approved
 			approve();
 			System.out.println("Enter 'Y' to continue or 'Q' to return to home screen");
 			option = scan.nextLine();
@@ -186,7 +176,7 @@ public class Employee implements java.io.Serializable {
 				reviewApplications();
 			else
 				employeeHome();
-		case "D":
+		case "D":	//if application is denied
 			deny();
 			System.out.println("Enter 'Y' to continue or 'Q' to return to home screen");
 			option = scan.nextLine().toUpperCase();
@@ -195,33 +185,12 @@ public class Employee implements java.io.Serializable {
 			else
 				employeeHome();
 		default:
-			//if not a valid number
-			//have welcome() recursively call itself if it makes it past
-			//throw new InvalidChoiceException("Option invalid");
-			System.out.println("Input not valid.\n");
+			System.out.println("Input not valid. Please enter either 'A' or 'D'\n");
 			reviewApplications();
-		}
-		
-		System.out.println("Enter 'Y' to continue to the next application");
-		option = scan.nextLine().toUpperCase();
-		if(option == "Y")
-			reviewApplications();
-		else
-			employeeHome();
-		
-		
-	}
-	
-	public static <T, E> Set<T> getKeysByValue(Map<T, E> map, E value) {
-	    return map.entrySet()
-	              .stream()
-	              .filter(entry -> Objects.equals(entry.getValue(), value))
-	              .map(Map.Entry::getKey)
-	              .collect(Collectors.toSet());
+		}		
 	}	
-		
 	
-	
+	//employee login page
 	public static void employeeLogin() {
 		String userName, password;
 		boolean userFound= false, passFound = false;
@@ -237,7 +206,7 @@ public class Employee implements java.io.Serializable {
 		try {
 			FileInputStream fileIn = new FileInputStream("./src/data/EmployeeUsers.txt"); //read contents
 			ObjectInputStream in = new ObjectInputStream(fileIn);
-			map = (Map<String,String>)in.readObject();       //cast the contents into desired Object
+			map = (Map<String,String>)in.readObject();       //read in username/password map
 			in.close();
 			fileIn.close();
 		}catch(IOException ex) {
@@ -251,15 +220,15 @@ public class Employee implements java.io.Serializable {
 		if(map.containsValue(password))
 			passFound = true;
 		
-		if(passFound&&userFound) {
+		if(passFound&&userFound) {		//if username and password are found, allow login
 			employeeHome();
 		} else {
 			System.out.println("\n   Invalid username/password\n");
 			employeeLogin();
 		}
-	
 	}
 	
+	//employee home screen
 	public static void employeeHome() {
 		Scanner scan = new Scanner(System.in);
 		String option = "";
@@ -285,15 +254,8 @@ public class Employee implements java.io.Serializable {
 			System.exit(0);
 		default:
 			//if not a valid number
-			//have welcome() recursively call itself if it makes it past
-			//throw new InvalidChoiceException("Option invalid");
-			System.out.println("\nPlease enter a number 1-2\n");
+			System.out.println("\nPlease enter a number 1-4\n");
 			employeeHome();
 		}
-		
 	}
-	
-	
-	
-	
 }

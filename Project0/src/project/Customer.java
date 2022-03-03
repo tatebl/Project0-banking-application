@@ -27,22 +27,22 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			this.lastName = lastName;
 			this.phone = phone;
 			this.address = address;
-			this.bankAcct = acct;		//had to make copy constructor
+			this.bankAcct = acct;	
 		}
 		
-		
+		//allows us to print out all info for a Customer
 		@Override
 		public String toString() {
-		  return getClass().getSimpleName() + ":[name= " + firstName + " "  + lastName + "] \n"
-		  		+ "[Username= " + username + "]\n"
-		  		+ "[Address= " + address + "]\n"
-		  		+ "[Phone= " + phone + "]\n"
-		  		+ "[Account Number= " + bankAcct.acctNumber + "]\n"
-		  		+ "[Joint= " + bankAcct.isJoint + "]\n"
-		  		+ "[Balance= " + bankAcct.balance + "]\n";
+		  return "\n" + getClass().getSimpleName() + ":    " + firstName + " " + lastName +  "\n"
+		  		+ "Username:    " + username + "\n"
+		  		+ "Address:     " + address + "\n"
+		  		+ "Phone:       " + phone + "\n"
+		  		+ "Account No:  " + bankAcct.acctNumber + "\n"
+		  		+ "Joint:       " + bankAcct.isJoint + "\n"
+		  		+ "Balance:     " + bankAcct.balance + "\n";
 		}
 		
-		
+		//customer starting screen
 		public static void customerWelcome() {
 			Scanner s = new Scanner(System.in);
 			
@@ -58,16 +58,13 @@ public class Customer implements java.io.Serializable, BankingInterface {
 				case "2":
 					customerLogin();
 				default:
-					//if not a valid number
-					//have welcome() recursively call itself if it makes it past
-					//throw new InvalidChoiceException("Option invalid");
 					System.out.println("\nPlease enter a number 1-2\n");
 					customerWelcome();
 			}
 		}
 		
+		
 		static void makeNewApplication() {
-			
 			Scanner scan = new Scanner(System.in);
 			AcctApplication myApp = new AcctApplication();			//create a new application object
 			String type = "";
@@ -99,20 +96,17 @@ public class Customer implements java.io.Serializable, BankingInterface {
 		
 			//grab queue of applications and add, send back to file	
 			try {
-				
-				FileInputStream fileIn = new FileInputStream("./src/data/applications.txt"); //read contents
+				FileInputStream fileIn = new FileInputStream("./src/data/applications.txt"); 
 				ObjectInputStream in = new ObjectInputStream(fileIn);
-				q = (Queue<AcctApplication>)in.readObject();       //cast the contents into desired Object
+				q = (Queue<AcctApplication>)in.readObject();       
 				in.close();
 				fileIn.close();
 				}catch(IOException ex) {
 					ex.printStackTrace();
 				}catch(ClassNotFoundException e1) {
 					e1.printStackTrace();
-				}
-			
+				}	
 			q.add(myApp);		//add newly created AcctApplication to the queue to be reviewed by admin
-			
 			try {
 				FileOutputStream fileOut = new FileOutputStream("./src/data/applications.txt"); 
 				ObjectOutputStream out = new ObjectOutputStream(fileOut);  
@@ -127,7 +121,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 		}
 		
 		
-		
+		//customer login screen
 		public static void customerLogin() {
 			String userName, password;
 			boolean userFound= false, passFound = false;
@@ -143,7 +137,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			try {
 				FileInputStream fileIn = new FileInputStream("./src/data/users.txt"); //read username/pass file
 				ObjectInputStream in = new ObjectInputStream(fileIn);
-				map = (Map<String,String>)in.readObject();       //cast the contents into desired Object
+				map = (Map<String,String>)in.readObject();       //read in map of username,password
 				in.close();
 				fileIn.close();
 			}catch(IOException ex) {
@@ -157,7 +151,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			if(map.containsValue(password))
 				passFound = true;
 			
-			if(passFound&&userFound) {
+			if(passFound&&userFound) {			//if username and password are found, allow access to home screen
 				customerHome(userName);
 			} else {
 				System.out.println("\n   Invalid username/password\n");
@@ -165,14 +159,16 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			}
 		}
 		
-		
+		//customer home screen
 		private static void customerHome(String userName) {
 			ArrayList<Customer> customers = new ArrayList<Customer>();
 			Customer thisCustomer = new Customer();
+			Scanner scan = new Scanner(System.in);
+			String option = "";
 			try {
-				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); 
 				ObjectInputStream in = new ObjectInputStream(fileIn);
-				customers = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+				customers = (ArrayList<Customer>)in.readObject();       
 				in.close();
 				fileIn.close();
 				}catch(IOException ex) {
@@ -183,16 +179,14 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			
 			for(Customer a: customers) {
 				if(a.username != null && a.username.equals(userName))
-					thisCustomer = a;
+					thisCustomer = a;		//copy over customer object to utilize variables
 			}
 			
+			//print account info for customer
 			System.out.println("\n\t" + thisCustomer.firstName + " " + thisCustomer.lastName);
 			System.out.println("\t" + thisCustomer.bankAcct.acctNumber + "\t" + thisCustomer.bankAcct.type);
 			System.out.println("\tBalance: $" + thisCustomer.bankAcct.balance);
-			
-			Scanner scan = new Scanner(System.in);
-			String option = "";
-			
+		
 			System.out.println("\n      Please choose from the following: \n");
 			System.out.println("    (1) Make a deposit");
 			System.out.println("    (2) Make a withdrawal");
@@ -213,15 +207,12 @@ public class Customer implements java.io.Serializable, BankingInterface {
 				System.out.println("Logging out...");
 				System.exit(0);
 			default:
-				//if not a valid number
-				//have welcome() recursively call itself if it makes it past
-				//throw new InvalidChoiceException("Option invalid");
-				System.out.println("\nPlease enter a number 1-2\n");
+				System.out.println("\nPlease enter a number 1-4\n");
 				customerHome(userName);
 			}
 		}
 
-
+		//method to deposit into personal account
 		@Override
 		public void deposit(String username) {
 			ArrayList<Customer> customers = new ArrayList<Customer>();
@@ -230,9 +221,9 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			String option = "";
 			
 			try {
-				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); 
 				ObjectInputStream in = new ObjectInputStream(fileIn);
-				customers = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+				customers = (ArrayList<Customer>)in.readObject();       
 				in.close();
 				fileIn.close();
 				}catch(IOException ex) {
@@ -242,18 +233,23 @@ public class Customer implements java.io.Serializable, BankingInterface {
 				}
 			
 			System.out.println("   Enter deposit amount: ");
-			option = scan.nextLine();
+			option = scan.nextLine();					
 			int dep = Integer.parseInt(option);
 			
+			if(dep<=0) {
+				System.out.println("\nInput invalid - negative amount");
+				customerHome(username);
+			}
+			
 			for(Customer a: customers) {
-				if(a.username != null && a.username.equals(username))
+				if(a.username != null && a.username.equals(username))		//find the correct customer
 					a.bankAcct.balance += dep;    //add amount to balance
 			}
 					
 			try {
 				FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
 				ObjectOutputStream out = new ObjectOutputStream(fileOut);  
-				out.writeObject(customers);         // serialize queue object to applications.txt
+				out.writeObject(customers);         
 				out.close();
 				fileOut.close();
 			}catch(IOException ex) {
@@ -262,10 +258,10 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			
 			System.out.println("$" + dep + " deposited...\n");
 			customerHome(username);
-			
 		}
 
-
+		//method to withdraw, will prompt and return to home screen if amount is greater than your balance
+		//or if a negative is entered
 		@Override
 		public void withdraw(String username) {
 			ArrayList<Customer> customers = new ArrayList<Customer>();
@@ -274,9 +270,9 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			String option = "";
 			
 			try {
-				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); //read contents
+				FileInputStream fileIn = new FileInputStream("./src/data/customers.txt"); 
 				ObjectInputStream in = new ObjectInputStream(fileIn);
-				customers = (ArrayList<Customer>)in.readObject();       //cast the contents into desired Object
+				customers = (ArrayList<Customer>)in.readObject();       
 				in.close();
 				fileIn.close();
 				}catch(IOException ex) {
@@ -288,6 +284,11 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			System.out.println("   Enter amount to withdraw: ");
 			option = scan.nextLine();
 			int with = Integer.parseInt(option);
+			
+			if(with<=0) {
+				System.out.println("\nInput invalid - negative amount");	//validate
+				customerHome(username);
+			}
 			
 			for(Customer a: customers) {
 				if(a.username != null && a.username.equals(username)) {
@@ -303,7 +304,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			try {
 				FileOutputStream fileOut = new FileOutputStream("./src/data/customers.txt"); 
 				ObjectOutputStream out = new ObjectOutputStream(fileOut);  
-				out.writeObject(customers);         // serialize queue object to applications.txt
+				out.writeObject(customers);         
 				out.close();
 				fileOut.close();
 			}catch(IOException ex) {
@@ -312,10 +313,10 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			
 			System.out.println("\n$" + with + " withdrawn...\n");
 			customerHome(username);
-			
 		}
 
-
+		//allows customer to transfer to another user
+		//validates non-negative number and amount is less that fromUser balance
 		@Override
 		public void transfer(String fromUser, String toUser) {
 			ArrayList<Customer> customers = new ArrayList<Customer>();
@@ -340,13 +341,18 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			option = scan.nextLine();
 			int amt = Integer.parseInt(option);
 			
+			if(amt<=0) {
+				System.out.println("\nInput invalid - negative amount");
+				customerHome(fromUser);
+			}
+			
 			for(Customer a: customers) {
 				if(a.username != null && a.username.equals(fromUser))
-					if(amt<a.bankAcct.balance) 
+					if(amt<=a.bankAcct.balance) 
 						a.bankAcct.balance -= amt;							//take out amount
 					else {
 						System.out.println("Cannot withdraw $" + amt + ". Current balance: " + a.bankAcct.balance);
-						customerHome(username);
+						customerHome(fromUser);
 					}
 			}
 			for(Customer a: customers) {
@@ -365,12 +371,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			}
 			
 			System.out.println("\n$" + amt + " transferred to " + toUser + "...\n");
-			customerHome(username);
-			
-			
+			customerHome(fromUser);
 		}
-		
-		
 
-	
 }
