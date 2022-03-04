@@ -336,10 +336,10 @@ public class Admin extends Employee implements BankingInterface {
 		Scanner scan = new Scanner(System.in);
 		Map<String,String> map = new HashMap<String,String>();
 		
-		System.out.println("\n            Admin Login\n");
-		System.out.println("Username: ");
+		System.out.println("\n              Admin Login\n");
+		System.out.print("Username: ");
 		userName = scan.nextLine();
-		System.out.println("Password:");
+		System.out.print("\nPassword: ");
 		password = scan.nextLine();
 		
 		try {
@@ -402,7 +402,7 @@ public class Admin extends Employee implements BankingInterface {
 			deleteAccount(username, option);
 		case "6":
 			System.out.println("Logging out...");
-			System.exit(0);
+			ProgramDriver.welcome();
 		default:
 			System.out.println("\nPlease enter a number 1-6\n");
 			adminHome(username);
@@ -437,6 +437,7 @@ public class Admin extends Employee implements BankingInterface {
 		System.out.println("    (1) Withdraw from an account");
 		System.out.println("    (2) Deposit to account");
 		System.out.println("    (3) Transfer between accounts");
+		System.out.println("    (4) Return to home page");
 		option = scan.nextLine();
 		
 		switch(option) {
@@ -450,6 +451,8 @@ public class Admin extends Employee implements BankingInterface {
 			System.out.println("Enter user you are transferring to:");
 			String toUser = scan.nextLine();
 			thisAdmin.transfer(fromUser, toUser);
+		case "4":
+			adminHome(userName);
 		default:
 		}
 	}

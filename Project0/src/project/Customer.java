@@ -55,7 +55,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 		public static void customerWelcome() {
 			Scanner s = new Scanner(System.in);
 			
-			System.out.println("\n\n           Customer Login\n         Would you like to:\n");
+			System.out.println("\n\n             Customer Login\n           Would you like to:\n");
 			System.out.println("    (1) Apply for a new bank account");
 			System.out.println("    (2) Login");
 			
@@ -125,8 +125,8 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			}catch(IOException ex) {
 				ex.printStackTrace();
 			}
-			System.out.println("\n Thank you! You will hear back shortly if we approve/deny your application.");
-			System.exit(0);		//quit application after submitting
+			System.out.println("\n Thank you! You will hear back shortly if we approve/deny your application.\n");
+			ProgramDriver.welcome();		//quit application after submitting
 		}
 		
 		
@@ -137,10 +137,10 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			Scanner scan = new Scanner(System.in);
 			Map<String,String> map = new HashMap<String,String>();
 			
-			System.out.println("\n\n           Customer Login\n");
-			System.out.println("Username: ");
+			System.out.println("\n\n             Customer Login\n");
+			System.out.print("Username: ");
 			userName = scan.nextLine();
-			System.out.println("Password:");
+			System.out.print("\nPassword: ");
 			password = scan.nextLine();
 			
 			try {
@@ -192,7 +192,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 			}
 			
 			//print account info for customer
-			System.out.println("___________________________________");
+			System.out.println("\n___________________________________");
 			System.out.println("\n\t" + thisCustomer.firstName + " " + thisCustomer.lastName);
 			System.out.println("\t" + thisCustomer.bankAcct.acctNumber + "\t" + thisCustomer.bankAcct.type);
 			if(thisCustomer.bankAcct.isJoint)
@@ -218,8 +218,8 @@ public class Customer implements java.io.Serializable, BankingInterface {
 				option = scan.nextLine();
 				thisCustomer.transfer(userName, option);
 			case "4":
-				System.out.println("Logging out...");
-				System.exit(0);
+				System.out.println("\nLogging out...\n");
+				ProgramDriver.welcome();
 			default:
 				System.out.println("\nPlease enter a number 1-4\n");
 				customerHome(userName);
@@ -246,7 +246,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 					e1.printStackTrace();
 				}
 			
-			System.out.println("   Enter deposit amount: ");
+			System.out.println("Enter deposit amount: ");
 			option = scan.nextLine();					
 			float dep = Float.parseFloat(option);
 			
@@ -295,7 +295,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 					e1.printStackTrace();
 				}
 			
-			System.out.println("   Enter amount to withdraw: ");
+			System.out.println("Enter amount to withdraw: ");
 			option = scan.nextLine();
 			float with = Float.parseFloat(option);
 			
@@ -351,7 +351,7 @@ public class Customer implements java.io.Serializable, BankingInterface {
 					e1.printStackTrace();
 				}
 			
-			System.out.println("   Enter amount to transfer: ");
+			System.out.println("Enter amount to transfer: ");
 			option = scan.nextLine();
 			float amt = Float.parseFloat(option);
 			

@@ -198,9 +198,9 @@ public class Employee implements java.io.Serializable {
 		Map<String,String> map = new HashMap<String,String>();
 		
 		System.out.println("\n            Employee Login\n");
-		System.out.println("Username: ");
+		System.out.print("Username: ");
 		userName = scan.nextLine();
-		System.out.println("Password:");
+		System.out.print("\nPassword: ");
 		password = scan.nextLine();
 		
 		try {
@@ -232,7 +232,7 @@ public class Employee implements java.io.Serializable {
 	public static void employeeHome() {
 		Scanner scan = new Scanner(System.in);
 		String option = "";
-		System.out.println("  ________________________________________");
+		System.out.println("\n  ________________________________________");
 		System.out.println("\n                 Welcome!");
 		System.out.println("      Please choose from the following: \n");
 		System.out.println("    (1) View new account applications");
@@ -252,8 +252,8 @@ public class Employee implements java.io.Serializable {
 			viewAllAccounts();
 			employeeHome();
 		case "4":
-			System.out.println("Logging out...");
-			System.exit(0);
+			System.out.println("\nLogging out...\n");
+			ProgramDriver.welcome();
 		default:
 			//if not a valid number
 			System.out.println("\nPlease enter a number 1-4\n");
