@@ -65,6 +65,7 @@ public class Admin extends Employee implements BankingInterface {
 		for(Customer a: customers) {
 			if(a.username != null && a.username.equals(username)) {
 				if(a.bankAcct.balance>=with) {
+					oldBalance = a.bankAcct.balance;
 					thisCustomer = a;
 					a.bankAcct.balance -= with;    //withdraw amount from balance if amount is less
 				}
