@@ -401,7 +401,7 @@ public class Admin extends Employee implements BankingInterface {
 			option = scan.nextLine();
 			deleteAccount(username, option);
 		case "6":
-			System.out.println("Logging out...");
+			System.out.println("\nLogging out...\n");
 			ProgramDriver.welcome();
 		default:
 			System.out.println("\nPlease enter a number 1-6\n");

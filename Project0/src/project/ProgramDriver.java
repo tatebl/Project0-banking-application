@@ -3,12 +3,19 @@ package project;
 import java.io.*;
 import java.util.*;
 
+/*
+	Logins for testing:
+	* Employee- susan1 pass- susan1
+	* Admin- john123 pass- john12
+*/
 
 public class ProgramDriver {
 	
 	public static void main(String[] args) {
 		
 		welcome();			//show welcome page and return which type of login
+		
+		
 	}
 
 	//Welcome screen to allow users to choose login page
